@@ -1,4 +1,4 @@
-import jenkinsApi from 'jenkins-api';
-import { JenkinsConfig } from '../config/jenkins.config';
+const jenkinsApi = require('jenkins-api');
+const JenkinsConfig = require('../config/jenkins.config');
 
-export default jenkinsApi.init(JenkinsConfig.remoteUrl);
+module.exports = jenkinsApi.init(JenkinsConfig.remoteUrl);
