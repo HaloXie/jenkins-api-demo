@@ -4,7 +4,6 @@ const xmlConvert = require('xml-js');
 
 const jobManager = require('../controllers/jobController.js');
 const { callbackHandler } = require('../utils/callback');
-const serverConfig = require('../config/server.config');
 
 const router = express.Router();
 
