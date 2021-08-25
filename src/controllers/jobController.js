@@ -31,7 +31,7 @@ const disableJob = (jobName, cb) => jenkinsInstance.disable_job(jobName, cb);
 
 const queryJobConfig = (jobName, cb) => jenkinsInstance.get_config_xml(jobName, cb);
 const updateJobConfig = (jobName, configFn, cb) =>
-	update_config.get_config_xml(jobName, configFn, cb);
+	jenkinsInstance.update_config(jobName, configFn, cb);
 
 module.exports = {
 	createJob,

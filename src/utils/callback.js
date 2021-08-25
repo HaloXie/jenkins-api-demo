@@ -1,3 +1,9 @@
+/**
+ *
+ * @param {*} res
+ * @param {*} successFn (result) => void
+ * @returns void
+ */
 const callbackHandler = (res, successFn) => (error, result) => {
 	if (error) {
 		console.error(error);
