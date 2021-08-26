@@ -1,4 +1,4 @@
 module.exports = {
-	remoteUrl1: 'http://admin:admin@localhost:8080', // 不是标准的 url 仅用于 jenkins api
-	remoteUrl: 'http://admin:113dae649c018660fd5300307288017cc4@localhost:8080',
+	remoteUrl1: 'http://admin:admin@localhost:8080', // useless
+	remoteUrl: 'http://admin:1193e62bcc5ff90161468792376700d79f@localhost:8080',
 };

@@ -8,6 +8,7 @@ const callbackHandler = (res, successFn) => (error, result) => {
 	if (error) {
 		console.error(error);
 		return res.json({
+			url: res.req.originalUrl,
 			error,
 			success: false,
 		});

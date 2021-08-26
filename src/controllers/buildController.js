@@ -4,9 +4,14 @@
 const jenkinsInstance = require('../instances/jenkins');
 
 /**
- * 查询所有的 queue
+ * 返回该 Job 下所有的 Build 信息
  */
-const queryQueueList = cb => jenkinsInstance.queue(cb);
+const queryAllBuilds = (jobName, cb) => jenkinsInstance.all_builds(jobName, cb);
+
+/**
+ * 查询上一次 build 信息
+ */
+const queryLastBuildInfo = (jobName, cb) => jenkinsInstance.last_build_info(jobName, cb);
 
 /**
  * 返回 queueId，通过 queueId 可以在 queryQueueItem 中查询到 buildId
@@ -15,22 +20,6 @@ const queryQueueList = cb => jenkinsInstance.queue(cb);
  * @returns { queueId:string }
  */
 const buildJob = (jobName, cb) => jenkinsInstance.build(jobName, cb);
-
-/**
- * 根据 queueId 查询 buildId
- * @param {*} queueId
- * @param {*} cb
- * @returns {executable: {number: string}}
- */
-const queryQueueItem = (queueId, cb) => jenkinsInstance.build(queueId, cb);
-
-/**
- * 根据 queueId 取消队列中的任务
- * @param {*} queueId
- * @param {*} cb
- * @returns
- */
-const cancelQueueItem = (queueId, cb) => jenkinsInstance.cancel_item(queueId, cb);
 
 /**
  * 查询当前的 build 记录
@@ -57,12 +46,18 @@ const stopBuildJob = (jobName, buildId, cb) => jenkinsInstance.stop_build(jobNam
 const queryJobConsole = (jobName, buildId, cb) =>
 	jenkinsInstance.console_output(jobName, buildId, cb);
 
+/**
+ * 删除 build 任务，
+ */
+const deleteBuildJob = (jobName, buildId, cb) => jenkinsInstance.delete_build(jobName, buildId, cb);
+
 module.exports = {
-	queryQueueList,
 	buildJob,
-	queryQueueItem,
-	cancelQueueItem,
+
 	queryBuildInfo,
 	stopBuildJob,
 	queryJobConsole,
+	deleteBuildJob,
+	queryAllBuilds,
+	queryLastBuildInfo,
 };
