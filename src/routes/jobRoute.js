@@ -32,6 +32,24 @@ router.post('/', (req, res) => {
 		})
 	);
 });
+router.post('/V1', async (req, res) => {
+	/**
+   * 失败，暂时不考虑了
+  * TypeError: Cannot read property 'job_info' of undefined
+    at /Users/ezt.xieminghao/Documents/my-code/jenkins-auto-build-demo/node_modules/jenkins-api/lib/main.js:741:14
+  */
+	const { name, description } = req.body;
+	assert(!!name, 'Job name could not be empty');
+
+	const { result, success, error } = await jobManager.createJobPromise(name, description);
+	if (!success) {
+		console.error(error);
+		return res.json({ error, success });
+	}
+
+	const { url } = result;
+	res.json({ success: true, name, description, url });
+});
 
 // queryJobs
 router.get('/', (req, res) => {

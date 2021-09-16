@@ -2,6 +2,7 @@
  *
  */
 const jenkinsInstance = require('../instances/jenkins');
+const { promisify } = require('../utils/promisify');
 
 const xmlConfig = {
 	createJob: description =>
@@ -23,6 +24,10 @@ const checkJobName = jonName => {
 const createJob = (jobName, description, cb) =>
 	jenkinsInstance.create_job(jobName, xmlConfig.createJob(description), cb);
 
+const createJobPromise = function (jobName, description) {
+	return promisify(jenkinsInstance.create_job)(jobName, xmlConfig.createJob(description));
+};
+
 const queryJobs = cb => jenkinsInstance.all_jobs(cb);
 const queryJob = (jobName, cb) => jenkinsInstance.job_info(jobName, cb);
 const deleteJob = (jobName, cb) => jenkinsInstance.delete_job(jobName, cb);
@@ -35,6 +40,7 @@ const updateJobConfig = (jobName, configFn, cb) =>
 
 module.exports = {
 	createJob,
+	createJobPromise,
 	queryJobs,
 	queryJob,
 	updateJobConfig,
