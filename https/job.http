@@ -1,0 +1,31 @@
+@host = http://localhost:8081
+@contentType = application/json
+@route = job
+
+#
+@jobName = testBuildId4
+
+### 创建 job 的信息
+POST  {{host}}/{{route}} HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+  "name":"{{jobName}}",
+  "description":"{{jobName}} description"
+}
+
+
+### 获取 job @jobName 的信息
+GET {{host}}/{{route}}/{{jobName}} HTTP/1.1
+Content-Type: {{contentType}}
+
+### 获取 job @jobName 的 config 信息
+GET {{host}}/{{route}}/{{jobName}}/config HTTP/1.1
+Content-Type: {{contentType}}
+
+
+### 更新 job @jobName 的 config 信息
+PUT {{host}}/{{route}}/{{jobName}}/config HTTP/1.1
+Content-Type: {{contentType}}
+
+{ "git":"", "branch":"" }

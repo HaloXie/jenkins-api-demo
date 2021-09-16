@@ -1,0 +1,22 @@
+@host = http://localhost:8081
+@contentType = application/json
+@route = build
+
+#
+@jobName = testBuildId4
+
+### 指定执行 build
+POST {{host}}/{{route}}/{{jobName}} HTTP/1.1
+Content-Type: {{contentType}}
+
+### 根据 buildId 获取 result 信息
+GET {{host}}/{{route}}/{{jobName}}/id/1/info HTTP/1.1
+Content-Type: {{contentType}}
+
+### 获取 job testBuildId1 最后一次编译信息
+GET {{host}}/{{route}}/{{jobName}}/last HTTP/1.1
+Content-Type: {{contentType}}
+
+### get build Job console
+GET {{host}}/{{route}}/{{jobName}}/id/1/console HTTP/1.1
+Content-Type: {{contentType}}

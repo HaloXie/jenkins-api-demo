@@ -66,27 +66,78 @@ router.put('/:name/config', (req, res) => {
 		const buildContent = `
       # !/bin/sh -l
       # export PATH=/Users/ezt.xieminghao/.nvm/versions/node/v16.4.0/bin/:$PATH
-      clonePath='/usr/local/code/${folderName}' # the folder that saves the clone code
+      # clonePath='/usr/local/code/${folderName}' # the folder that saves the clone code
 
       # clone specified repository with branch
-      sudo git clone -b ${branch} ${git} $clonePath
+      # sudo git clone -b ${branch} ${git} $clonePath
 
       # compile
-      cd $clonePath
-      sudo npm install && sudo npm run build 
+      # cd $clonePath
+      # sudo npm install && sudo npm run build 
+      #!/bin/bash  
+
+      # start time  
+      date +"%H:%M:%S"  
+
+      echo "wait for 10 seconds"  
+
+      # sleep for 10 seconds  
+      sleep 10s   
+      # you can also use "sleep 9" in place of "sleep 9s" because if there is no suffix, it is considered as "seconds".  
+
+      # end time  
+      date +"%H:%M:%S"  
+
+      echo "Task Completed"
+    `;
+		// 编译之后运行的，注意需要提前安装 groovy post-build 插件
+		// https://www.notion.so/Send-the-callback-to-info-server-the-build-result-in-post-build-action-80b1f0a1d2364053aaae3c2294c17bd3#6045e9e5ef6b4cc99f385fc202d77dce
+		// manager.listener.logger.println 不能简写为 println
+		const postBuildContent = `
+      manager.listener.logger.println "--------------post-build Start--------------"
+      def buildResult = manager.getResult()
+      manager.listener.logger.println "运行结果" + buildResult
+
+      manager.listener.logger.println "--------------call back--------------"
+      // http://10.13.152.164:5888/offapi/cons/template 测试 API
+      def proc = "curl -I -X GET -H 'Content-Type:application/json' http://10.13.152.164:5888/offapi/cons/template".execute()
+      // cURL uses error output stream for progress output.
+      Thread.start { System.err << proc.err } 
+      // Wait until cURL process finished and continue with the loop.
+      proc.waitFor()
+
+      manager.listener.logger.println "--------------post-build End--------------"
     `;
 
 		/**
 		 * <?xml version="1.0" encoding="UTF-8"?><project><description>description11112</description></project>
 		 * 开始的是传入是如上，创建 job 的时候包含 description
 		 */
-		const builders = jsonObject.project?.builders || {};
 		const buildShell = {
 			'hudson.tasks.Shell': {
 				command: buildContent,
 			},
 		};
-		jsonObject.project.builders = { ...builders, ...buildShell }; // 只可以有一个 Shell
+		jsonObject.project.builders = buildShell; // 目前只有一个 Shell
+
+		//
+		const postBuildShell = {
+			'org.jvnet.hudson.plugins.groovypostbuild.GroovyPostbuildRecorder': {
+				_attributes: {
+					plugin: 'groovy-postbuild@2.5',
+				},
+				script: {
+					_attributes: {
+						plugin: 'script-security@1.78',
+					},
+					script: postBuildContent,
+					sandbox: false, // Use Groovy Sandbox
+				},
+				behavior: 2, // 当执行失败的之后，标记任务为 [do nothing, mark as unstable, mark as failed]
+				runForMatrixParent: false, // dont know
+			},
+		};
+		jsonObject.project.publishers = postBuildShell; // 目前只有一个 Shell
 
 		console.log('====== 修改后的 JSON ======');
 		console.log(jsonObject);

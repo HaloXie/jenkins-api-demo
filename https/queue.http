@@ -1,0 +1,12 @@
+@host = http://localhost:8081
+@contentType = application/json
+@route = queue
+
+#
+@queueId = 28
+
+### 根据 queueId 获取 build 信息
+GET {{host}}/{{route}}/{{queueId}} HTTP/1.1
+Content-Type: {{contentType}}
+
+

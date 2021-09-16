@@ -1,0 +1,69 @@
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: text/xml; charset=utf-8
+Content-Length: 2071
+ETag: W/"817-W0NY6iM9rudyYi4z+eItqGjy1XI"
+Date: Thu, 16 Sep 2021 03:43:11 GMT
+Connection: close
+
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash  
+
+# start time  
+date +&quot;%H:%M:%S&quot;  
+
+echo &quot;wait for 90 seconds&quot;  
+
+# sleep for 90 seconds  
+sleep 5s   
+# you can also use &quot;sleep 9&quot; in place of &quot;sleep 9s&quot; because if there is no suffix, it is considered as &quot;seconds&quot;.  
+
+
+# end time  
+date +&quot;%H:%M:%S&quot;  
+
+echo &quot;Task Completed&quot;
+
+
+
+</command>
+      <configuredLocalRules/>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <org.jvnet.hudson.plugins.groovypostbuild.GroovyPostbuildRecorder plugin="groovy-postbuild@2.5">
+      <script plugin="script-security@1.78">
+        <script>manager.listener.logger.println &quot;--------------post-build Start--------------&quot;
+def buildResult = manager.getResult()
+manager.listener.logger.println &quot;运行结果&quot; + buildResult
+
+manager.listener.logger.println &quot;--------------call back--------------&quot;
+def proc = &quot;curl -I -X GET -H &apos;Content-Type:application/json&apos; http://10.13.152.164:5888/offapi/cons/template&quot;.execute()
+// cURL uses error output stream for progress output.
+Thread.start { System.err &lt;&lt; proc.err } 
+// Wait until cURL process finished and continue with the loop.
+proc.waitFor()
+
+manager.listener.logger.println &quot;--------------post-build End--------------&quot;</script>
+        <sandbox>false</sandbox>
+      </script>
+      <behavior>2</behavior>
+      <runForMatrixParent>false</runForMatrixParent>
+    </org.jvnet.hudson.plugins.groovypostbuild.GroovyPostbuildRecorder>
+  </publishers>
+  <buildWrappers/>
+</project>
